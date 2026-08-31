@@ -1,0 +1,22 @@
+# Secrets / environment
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Local output
+downloads/
+data/assets_mock/
+
+# Local catalog assets (user content, not part of the project)
+data/assets/*
+!data/assets/.gitkeep
+
+# App state
+data/catalog/seen.json
+
+# OS
+.DS_Store

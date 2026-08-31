@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en" data-bs-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}repo-skill{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg site-nav" data-bs-theme="dark">
+    <div class="container">
+      <a class="brand navbar-brand" href="{{ url_for('catalog.home') }}">
+        <span class="brand-name">repo-skill</span>
+      </a>
+      <a class="btn-skill" id="skill-download" href="{{ url_for('download.skill') }}"
+         data-skill-url="{{ url_for('download.skill') }}">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 3v11m0 0 4-4m-4 4-4-4" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M4 17v2a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-2" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <span>Download the skill</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Capture skill install notice (custom modal, no dependencies) -->
+  <div class="skill-modal" id="skill-modal" hidden>
+    <div class="skill-modal-backdrop" data-skill-close></div>
+    <div class="skill-modal-card" role="dialog" aria-modal="true" aria-labelledby="skill-modal-title">
+      <h2 id="skill-modal-title">Before downloading the skill</h2>
+      <p>This is the official skill to <strong>prepare an asset for sharing</strong> on repo-skill.
+         The zip holds the same skill in two formats: one for <strong>Codex</strong>, one for
+         <strong>Claude Code</strong>.</p>
+      <ol class="skill-steps">
+        <li>Click <strong>Download now</strong>: you get <code>repo-skill-publish.zip</code>,
+            containing one folder per agent and a <code>README.txt</code>.</li>
+        <li>Copy the folder of the agent you use into the project holding the asset you
+            want to share, at the path shown:
+            <ul>
+              <li><code>codex/</code> → <code>.agents/repo-skill-publish/</code></li>
+              <li><code>claude-code/</code> → <code>.claude/skills/repo-skill-publish/</code></li>
+            </ul>
+            These are hidden folders (they start with a dot): in Finder show them with
+            <kbd>⌘</kbd> <kbd>⇧</kbd> <kbd>.</kbd>. If they do not exist, create them.</li>
+        <li>To create and publish the asset, write your agent a prompt like:</li>
+      </ol>
+      <p class="skill-prompt"><code>use the repo-skill-publish skill to prepare and publish
+         the asset "&lt;asset name&gt;", contained in the files &lt;file_name&gt;</code></p>
+      <div class="skill-modal-actions">
+        <button type="button" class="btn-skill-cancel" data-skill-close>Cancel</button>
+        <a class="btn-skill-go" id="skill-modal-download" href="{{ url_for('download.skill') }}">Download now</a>
+      </div>
+    </div>
+  </div>
+
+  <main class="container py-4">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, msg in messages %}
+          <div class="alert alert-{{ category or 'info' }} alert-dismissible fade show" role="alert">
+            {{ msg }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <script>
+    (function () {
+      var trigger = document.getElementById("skill-download");
+      var modal = document.getElementById("skill-modal");
+      var dlBtn = document.getElementById("skill-modal-download");
+      if (!trigger || !modal) return;
+
+      function close() { modal.hidden = true; }
+
+      // The navbar button always opens the notice; the download starts from the modal.
+      trigger.addEventListener("click", function (e) {
+        e.preventDefault();
+        modal.hidden = false;
+      });
+      if (dlBtn) dlBtn.addEventListener("click", close);
+
+      modal.querySelectorAll("[data-skill-close]").forEach(function (el) {
+        el.addEventListener("click", close);
+      });
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape" && !modal.hidden) close();
+      });
+    })();
+  </script>
+
+</body>
+</html>

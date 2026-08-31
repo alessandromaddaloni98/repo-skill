@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 200" role="img" aria-label="Guide">
+  <defs>
+    <linearGradient id="gGuide" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#198754"/><stop offset="1" stop-color="#115c3a"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="200" fill="url(#gGuide)"/>
+  <g fill="#ffffff">
+    <path d="M150 55 h100 a10 10 0 0 1 10 10 v80 a10 10 0 0 1 -10 10 h-100 z" opacity="0.95"/>
+    <path d="M150 55 h-10 a10 10 0 0 0 -10 10 v80 a10 10 0 0 0 10 10 h10 z" opacity="0.7"/>
+  </g>
+  <g stroke="#198754" stroke-width="6" stroke-linecap="round">
+    <line x1="165" y1="80" x2="245" y2="80"/>
+    <line x1="165" y1="100" x2="245" y2="100"/>
+    <line x1="165" y1="120" x2="215" y2="120"/>
+  </g>
+</svg>

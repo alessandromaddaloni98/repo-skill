@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block content %}
+
+<header class="hero">
+  <h1>Team asset catalog</h1>
+  <p class="lead-sub">Reusable technical assets.</p>
+</header>
+
+<form class="filter-bar row g-2" method="get">
+  <div class="col-md-3">
+    <div class="combo" data-combo>
+      <input type="search" name="q" value="{{ q }}" class="form-control" autocomplete="off"
+             role="combobox" aria-expanded="false" aria-autocomplete="list"
+             aria-controls="q-suggest" data-combo-input
+             placeholder="Search…">
+      <ul class="combo-list" id="q-suggest" role="listbox" data-combo-list hidden></ul>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <select name="author" class="form-select" onchange="this.form.submit()">
+      <option value="">All people</option>
+      {% for a in all_authors %}
+        <option value="{{ a }}" {{ 'selected' if a == author_filter }}>{{ a }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-3">
+    <select name="project" class="form-select" onchange="this.form.submit()">
+      <option value="">All projects</option>
+      {% for p in all_projects %}
+        <option value="{{ p }}" {{ 'selected' if p == project_filter }}>{{ p }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-3">
+    <select name="type" class="form-select" onchange="this.form.submit()">
+      <option value="">All types</option>
+      {% for t in all_types %}
+        <option value="{{ t }}" {{ 'selected' if t == type_filter }}>{{ t }}</option>
+      {% endfor %}
+    </select>
+  </div>
+</form>
+
+{% if q or author_filter or project_filter or type_filter %}
+  <div class="filter-reset">
+    <a href="{{ url_for('catalog.home') }}" class="btn-reset">
+      <span aria-hidden="true">✕</span> Clear filters
+    </a>
+  </div>
+{% endif %}
+
+{% if not items %}
+  <div class="empty-state">
+    <div class="glyph">⬡</div>
+    {% if q or author_filter or project_filter or type_filter %}
+      <p class="mb-0 mt-2">No asset matches the filters. Try clearing the search.</p>
+    {% else %}
+      <p class="mb-0 mt-2">The catalog is empty. Publish the first asset with the
+        <code>repo-skill-publish</code> skill, then copy the generated folder into
+        <code>data/assets/</code>.</p>
+    {% endif %}
+  </div>
+{% endif %}
+
+<div class="row row-cols-1 row-cols-md-2 g-4">
+  {% for item in items %}
+  <div class="col">
+    <div class="card card-skill position-relative">
+      <a class="stretched-link" href="{{ url_for('catalog.detail', item_id=item.id) }}"
+         aria-label="{{ item.name }}"></a>
+      <div class="card-head">
+        <div class="thumb-wrap{{ ' has-cover' if item.image }}">
+          {% if item.image %}
+            <img class="card-cover" src="{{ url_for('download.asset_image', item_id=item.id) }}"
+                 alt="{{ item.name }}">
+          {% else %}
+            <img class="card-thumb"
+                 src="{{ url_for('static', filename='img/types/' ~ (item.type if item.type in ['code','model','guide','agent'] else 'code') ~ '.svg') }}"
+                 alt="{{ item.type }}">
+          {% endif %}
+        </div>
+        <div class="card-head-text">
+          {% if item.id in new_ids %}
+            <div class="card-head-top">
+              <span class="badge new-ribbon">NEW</span>
+            </div>
+          {% endif %}
+          <h5 class="card-title">{{ item.name }}</h5>
+          <p class="card-byline">{{ item.author or "—" }} <span aria-hidden="true">·</span> {{ item.project or "—" }}</p>
+          <div class="card-tags">
+            <span class="badge badge-type-{{ item.type }}">{{ item.type }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <p class="card-text">{{ item.description }}</p>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<script id="suggest-data" type="application/json">{{ suggest | tojson }}</script>
+<script src="{{ url_for('static', filename='js/combo.js') }}"></script>
+
+{% endblock %}

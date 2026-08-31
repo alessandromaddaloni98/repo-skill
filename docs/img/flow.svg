@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1020 250" width="1020" height="250"
+     role="img" aria-labelledby="flowTitle flowDesc">
+  <title id="flowTitle">From capture to browsing</title>
+  <desc id="flowDesc">In the producing project the skill encapsulates an asset into a
+  folder holding skill.json, README and files. The folder is copied into data/assets/,
+  where the catalog reads it and makes it browsable and downloadable.</desc>
+
+  <style>
+    .bg    { fill: #0b1418; }
+    .card  { fill: #14232a; stroke: #2b4550; stroke-width: 1.5; }
+    .accent{ fill: #4fd3e8; }
+    .lbl   { fill: #e8f4f7; font: 600 15px ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+    .sub   { fill: #9fb9c2; font: 400 12.5px ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+    .mono  { fill: #7fdfef; font: 400 12px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .step  { fill: #4fd3e8; font: 700 10.5px ui-sans-serif, system-ui, sans-serif; letter-spacing: .1em; }
+    .cap   { fill: #7f9aa4; font: 400 11px ui-sans-serif, system-ui, sans-serif; }
+    .capm  { fill: #7fdfef; font: 400 11px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .flow  { stroke: #3c7f92; stroke-width: 2; fill: none; }
+  </style>
+
+  <rect class="bg" width="1020" height="250"/>
+
+  <defs>
+    <marker id="arw" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#3c7f92"/>
+    </marker>
+  </defs>
+
+  <!-- 1. producing project -->
+  <g>
+    <rect class="card" x="30" y="62" width="252" height="152" rx="10"/>
+    <text class="step" x="52" y="92">01 · CAPTURE</text>
+    <text class="lbl"  x="52" y="120">Producing project</text>
+    <text class="sub"  x="52" y="145">The agent already holds the</text>
+    <text class="sub"  x="52" y="163">files, deps and the why.</text>
+    <text class="mono" x="52" y="190">« encapsulate this asset »</text>
+  </g>
+
+  <path class="flow" d="M 292 138 L 344 138" marker-end="url(#arw)"/>
+
+  <!-- 2. asset folder -->
+  <g>
+    <rect class="card" x="354" y="62" width="252" height="152" rx="10"/>
+    <text class="step" x="376" y="92">02 · THE FORMAT</text>
+    <text class="lbl"  x="376" y="120">&lt;asset-slug&gt;/</text>
+    <text class="mono" x="376" y="146">skill.json</text>
+    <text class="mono" x="376" y="168">README.md</text>
+    <text class="mono" x="376" y="190">files/</text>
+    <circle class="accent" cx="588" cy="80" r="3"/>
+  </g>
+
+  <!-- caption on the 2 -> 3 arrow: this is where the copy happens -->
+  <path class="flow" d="M 616 138 L 728 138" marker-end="url(#arw)"/>
+  <text class="cap"  x="672" y="170" text-anchor="middle">copy into</text>
+  <text class="capm" x="672" y="187" text-anchor="middle">data/assets/</text>
+
+  <!-- 3. catalog -->
+  <g>
+    <rect class="card" x="738" y="62" width="252" height="152" rx="10"/>
+    <text class="step" x="760" y="92">03 · BROWSING</text>
+    <text class="lbl"  x="760" y="120">Catalog</text>
+    <text class="sub"  x="760" y="145">Search, filters, new items.</text>
+    <text class="sub"  x="760" y="163">Download the complete</text>
+    <text class="sub"  x="760" y="181">package, not a link.</text>
+  </g>
+</svg>

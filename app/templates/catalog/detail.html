@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+{% block content %}
+
+<a class="btn btn-back mb-3" href="{{ url_for('catalog.home') }}">
+  <span aria-hidden="true">←</span> Back to the catalog
+</a>
+
+<div class="detail-head">
+  {% if item.image %}
+    <img class="detail-icon detail-cover" src="{{ url_for('download.asset_image', item_id=item.id) }}"
+         alt="{{ item.name }}">
+  {% else %}
+    <img class="detail-icon"
+         src="{{ url_for('static', filename='img/types/' ~ (item.type if item.type in ['code','model','guide','agent'] else 'code') ~ '.svg') }}"
+         alt="{{ item.type }}">
+  {% endif %}
+  <div>
+    <h1 class="h3 mb-1">{{ item.name }}</h1>
+    <span class="badge badge-type-{{ item.type }}">{{ item.type }}</span>
+  </div>
+</div>
+
+<p class="text-muted mt-2">{{ item.description }}</p>
+<p class="small text-muted">
+  Author: {{ item.author or "—" }} · Project: {{ item.project or "—" }} · {{ item.created_at[:10] }}
+</p>
+
+<div class="mt-3 mb-4 d-flex flex-wrap gap-2 align-items-center">
+  <a class="btn-download" href="{{ url_for('download.package', item_id=item.id) }}">
+    <svg class="dl-icon" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M12 3v11m0 0 4-4m-4 4-4-4" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M4 17v2a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-2" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round"/>
+    </svg>
+    <span>Download package</span>
+  </a>
+  <button type="button" class="btn-contact" id="contact-open">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"
+            fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+      <path d="m3.5 6.5 8.5 6 8.5-6" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span>Contact the author</span>
+  </button>
+</div>
+
+<!-- Contact author box (message sending: not implemented yet) -->
+<div class="skill-modal" id="contact-modal" hidden>
+  <div class="skill-modal-backdrop" data-contact-close></div>
+  <div class="skill-modal-card" role="dialog" aria-modal="true" aria-labelledby="contact-title">
+    <h2 id="contact-title">Contact the author</h2>
+    <p>Got a question about <strong>{{ item.name }}</strong>? Write it here:
+       we will forward it to the author.</p>
+    <form id="contact-form" onsubmit="return false;">
+      <label class="contact-label" for="contact-email">Author email</label>
+      <input class="form-control contact-input" type="email" id="contact-email"
+             placeholder="your-name@example.com"
+             value="{% if '@' in (item.author or '') %}{{ item.author }}{% endif %}">
+
+      <label class="contact-label" for="contact-msg">Your question</label>
+      <textarea class="form-control contact-input" id="contact-msg" rows="5"
+                placeholder="Write your question for the author here…"></textarea>
+
+      <div class="skill-modal-actions">
+        <button type="button" class="btn-skill-cancel" data-contact-close>Cancel</button>
+        <button type="submit" class="btn-skill-go" id="contact-send" disabled>Send</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% if item.body %}
+  <details class="panel-toggle">
+    <summary>
+      <span class="panel-title">Guide</span>
+      <span class="panel-chevron" aria-hidden="true">▸</span>
+    </summary>
+    <div class="panel-body">
+      <div class="body-md">{{ item.body | markdown }}</div>
+    </div>
+  </details>
+{% endif %}
+
+<details class="panel-toggle">
+  <summary>
+    <span class="panel-title">Included files{% if item.files %} <span class="panel-count">{{ item.files|length }}</span>{% endif %}</span>
+    <span class="panel-chevron" aria-hidden="true">▸</span>
+  </summary>
+  <div class="panel-body">
+    {% if item.files %}
+      <ul class="list-group">
+        {% for f in item.files %}
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div class="file-info">
+              <span class="file-path">{{ f.relpath }}</span>
+              {% if f.role %}<div class="text-muted small">{{ f.role }}</div>{% endif %}
+            </div>
+            <div class="d-flex align-items-center gap-3 ms-3">
+              <span class="text-muted small text-nowrap">{{ (f.size / 1024) | round(1) }} KB</span>
+              <a class="btn-file-dl" title="Download {{ f.filename }}"
+                 href="{{ url_for('download.single_file', item_id=item.id, relpath=f.relpath) }}">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 3v11m0 0 4-4m-4 4-4-4" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M4 17v2a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-2" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                <span class="visually-hidden">Download {{ f.filename }}</span>
+              </a>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="text-muted mb-0"><em>No files included (text content only).</em></p>
+    {% endif %}
+  </div>
+</details>
+
+<script>
+  (function () {
+    var modal = document.getElementById("contact-modal");
+    var open = document.getElementById("contact-open");
+    if (!modal || !open) return;
+
+    function close() { modal.hidden = true; }
+
+    open.addEventListener("click", function () { modal.hidden = false; });
+    modal.querySelectorAll("[data-contact-close]").forEach(function (el) {
+      el.addEventListener("click", close);
+    });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && !modal.hidden) close();
+    });
+    // Message sending is not live yet: the button is disabled in the HTML.
+  })();
+</script>
+
+{% endblock %}
