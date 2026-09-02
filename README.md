@@ -7,6 +7,13 @@ A snippet in a chat thread, a model trained on the laptop of whoever trained it,
 guide in a wiki nobody has opened in months. The cost is not producing the asset: it
 is remembering that it exists.
 
+![The catalog: four assets of different types, filtered by type, one opened to show its
+guide and included files, and the modal explaining how to install the capture
+skill.](docs/img/demo.gif)
+
+*Browsing the catalog, opening an asset, and getting the capture skill. The catalog ships
+empty — the assets here are throwaway examples.*
+
 ![From capture to browsing: the skill encapsulates a project asset into a folder with
 skill.json, README and files; the folder lands in data/assets/, where the catalog makes
 it browsable and downloadable.](docs/img/flow.svg)
